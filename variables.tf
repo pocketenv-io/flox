@@ -1,9 +1,3 @@
-variable "packages" {
-  type = list(string)
-  description = "Packages to install"
-  default = []
-}
-
 variable "hostname" {
   type = string
   description = "Hostname of the container"
