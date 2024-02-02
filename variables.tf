@@ -33,5 +33,6 @@ variable "volumes" {
   description = "Volumes to mount"
   default = {
     flox-workspace = "/home/coder"
+    flox-nix = "/nix"
   }
 }
