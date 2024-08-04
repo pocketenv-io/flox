@@ -14,7 +14,8 @@ RUN rm -f packages.microsoft.gpg
 RUN  apt-get install -y apt-transport-https \
   && apt-get update \
   && apt-get install -y \
-  code sudo direnv unzip
+  --no-install-recommends \
+  code sudo direnv unzip ca-certificates iptables openssl pigz xz-utils
 
 RUN curl --proto =https --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux --extra-conf "sandbox = false" --init none --no-confirm
 ENV PATH=${PATH}:/nix/var/nix/profiles/default/bin
@@ -31,6 +32,11 @@ RUN addgroup --gid $GROUP_ID ${USER} \
 
 RUN mkdir -p /home/${USER} && chown -R ${USER}:${USER} /home/${USER}
 
+ENV DOCKER_TLS_CERTDIR=/certs
+RUN mkdir /certs /certs/client && chmod 1777 /certs /certs/client
+COPY --from=docker:27-dind /usr/local/bin/ /usr/local/bin/
+VOLUME /var/lib/docker
+
 USER ${USER}
 
 ENV PATH=${PATH}:/home/${USER}/.nix-profile/bin
@@ -40,9 +46,9 @@ RUN sudo chown -R ${USER}:${USER} /nix/store /nix/var
 SHELL ["bash", "-c"]
 
 RUN echo 'extra-trusted-substituters = https://cache.floxdev.com' | sudo tee -a /etc/nix/nix.conf \
-  && echo 'extra-trusted-public-keys = flox-store-public-0:8c/B+kjIaQ+BloCmNkRUKwaVPFWkriSAd0JJvuDu4F0=' | sudo tee -a /etc/nix/nix.conf
+  && echo 'extra-trusted-public-keys = flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs=' | sudo tee -a /etc/nix/nix.conf
 
-RUN nix profile install --impure --experimental-features "nix-command flakes auto-allocate-uids" --accept-flake-config github:flox/floxpkgs#flox.fromCatalog
+RUN nix profile install --impure --experimental-features "nix-command flakes auto-allocate-uids" --accept-flake-config github:flox/flox
 
 RUN sudo apt-get install -y git
 
@@ -58,4 +64,8 @@ RUN curl --proto '=https' --tlsv1.2 -sSf https://setup.atuin.sh | bash
 
 ENV BASH_ENV=/home/${USER}/.bashrc
 
-ENTRYPOINT [ "code", "-v", "tunnel" ]
+COPY entry.sh /usr/local/bin/entry.sh
+
+RUN sudo chmod a+x /sur/local/bin/entry.sh
+
+ENTRYPOINT [ "entry.sh" ]
