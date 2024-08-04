@@ -66,6 +66,6 @@ ENV BASH_ENV=/home/${USER}/.bashrc
 
 COPY entry.sh /usr/local/bin/entry.sh
 
-RUN sudo chmod a+x /sur/local/bin/entry.sh
+RUN sudo chmod a+x /usr/local/bin/entry.sh
 
 ENTRYPOINT [ "entry.sh" ]
