@@ -45,7 +45,7 @@ RUN sudo chown -R ${USER}:${USER} /nix/store /nix/var
 
 SHELL ["bash", "-c"]
 
-RUN echo 'extra-trusted-substituters = https://cache.floxdev.com' | sudo tee -a /etc/nix/nix.conf \
+RUN echo 'extra-trusted-substituters = https://cache.flox.dev' | sudo tee -a /etc/nix/nix.conf \
   && echo 'extra-trusted-public-keys = flox-cache-public-1:7F4OyH7ZCnFhcze3fJdfyXYLQw/aV7GEed86nQ7IsOs=' | sudo tee -a /etc/nix/nix.conf
 
 RUN nix profile install --impure --experimental-features "nix-command flakes auto-allocate-uids" --accept-flake-config github:flox/flox
