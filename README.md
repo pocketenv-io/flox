@@ -22,3 +22,4 @@ pocketenv init -t flox
 - Atuin
 - Direnv
 - Git
+- [VSCode Remote Tunnels](https://code.visualstudio.com/docs/remote/tunnels)
